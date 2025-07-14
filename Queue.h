@@ -21,4 +21,10 @@ typedef struct
 NamesList *createQueue();
 
 // Insert a name into queue
-void insertName(NamesList *queue, const char *name);
+void insertName(NamesList *queue, const char *newName);
+
+// Delete name from queue
+void deleteName(NamesList *queue, const char *deletedName);
+
+// Returnrs size of queue
+int queueSize(NamesList *queue);
