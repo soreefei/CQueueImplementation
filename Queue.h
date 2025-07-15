@@ -1,30 +1,37 @@
+#ifndef QUEUE_H
+#define QUEUE_H
+
 // Queue and node structures
 /* Name in Queue */
-typedef struct stringNode
+typedef struct nameNode
 {
     char *name;
-    struct stringNode *next;
-} NameNode;
+    struct nameNode *next;
+} nameNode;
 
 /* Queue Structure */
-typedef struct
+typedef struct NameQueue
 {
     // Head (front) of the queue
-    NameNode *front;
+    nameNode *front;
     // Tail (rear) of the queue
-    NameNode *rear;
+    nameNode *rear;
     // Size of the queue
     int size;
-} NamesList;
+} NameQueue;
 
 // Queue Creation
-NamesList *createQueue();
+NameQueue *createQueue();
 
 // Insert a name into queue
-void insertName(NamesList *queue, const char *newName);
+void insertName(NameQueue *queue, const char *newName);
+
+void insertFront(NameQueue *queue, const char *frontName);
 
 // Delete name from queue
-void deleteName(NamesList *queue, const char *deletedName);
+void deleteName(NameQueue *queue, const char *deletedName);
 
 // Returnrs size of queue
-int queueSize(NamesList *queue);
+int queueSize(NameQueue *queue);
+
+#endif
