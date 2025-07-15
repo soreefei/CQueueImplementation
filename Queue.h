@@ -34,4 +34,6 @@ void deleteName(NameQueue *queue, const char *deletedName);
 // Returnrs size of queue
 int queueSize(NameQueue *queue);
 
+void printQueue(NameQueue *queue);
+
 #endif

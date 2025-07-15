@@ -62,8 +62,8 @@ void insertName(NameQueue *queue, const char *newName)
     // Increment the size of the queue
     queue->size++;
     // Set the queue's new rear
-    queue->rear = newNode;
     queue->rear->next = newNode;
+    queue->rear = newNode;
     // Print the inserted name
     printf("Inserted name: %s\n", newNode->name);
 }
@@ -149,4 +149,28 @@ int queueSize(NameQueue *queue)
     printf("Size of queue: ");
     // Return size of queue
     return (queue) ? queue->size : 0;
+}
+
+/* printQueue */
+void printQueue(NameQueue *queue)
+{
+    // Check queue existence
+    if (!queue || queue->size == 0)
+    {
+        printf("Queue is empty.\n");
+        return;
+    }
+    // Print names in queue
+    printf("Here are the names in the queue: [ ");
+    nameNode *nodePTR = queue->front;
+    while (nodePTR != NULL)
+    {
+        printf("%s", nodePTR->name);
+        if (nodePTR->next != NULL)
+        {
+            printf(", ");
+        }
+        nodePTR = nodePTR->next;
+    }
+    printf(" ]\n");
 }
