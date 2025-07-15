@@ -6,9 +6,9 @@
 // Function Implementations
 
 /* createQueue */
-NamesList *createQueue()
+NameQueue *createQueue()
 {
-    NamesList *queue = malloc(sizeof(NamesList));
+    NameQueue *queue = malloc(sizeof(NameQueue));
     // Memory allocation failure
     if (!queue)
     {
@@ -23,7 +23,7 @@ NamesList *createQueue()
 
 /* insertName */
 // Inserts a name into the queue
-void insertName(NamesList *queue, const char *newName)
+void insertName(NameQueue *queue, const char *newName)
 {
     // Check queue existence
     if (!queue)
@@ -31,8 +31,14 @@ void insertName(NamesList *queue, const char *newName)
         fprintf(stderr, "Queue does not exist.\n");
         return;
     }
+    // Check for empty queue; will have to insert front node
+    if (queue->size == 0)
+    {
+        insertFront(queue, newName);
+        return;
+    }
     // Create a new node
-    NameNode *newNode = malloc(sizeof(NameNode));
+    nameNode *newNode = malloc(sizeof(nameNode));
     // Memory allocation failure
     if (!newNode)
     {
@@ -57,12 +63,44 @@ void insertName(NamesList *queue, const char *newName)
     queue->size++;
     // Set the queue's new rear
     queue->rear = newNode;
+    queue->rear->next = newNode;
     // Print the inserted name
     printf("Inserted name: %s\n", newNode->name);
 }
 
+void insertFront(NameQueue *queue, const char *frontName)
+{
+    // Allocate for front node
+    nameNode *frontNode = malloc(sizeof(nameNode));
+    // Memory allocation failure
+    if (!frontNode)
+    {
+        fprintf(stderr, "Memory allocation failed for new node.\n");
+        return;
+    }
+    // Allocate memory for name
+    frontNode->name = malloc(strlen(frontName) + 1);
+    if (!frontNode->name)
+    {
+        fprintf(stderr, "Memory allocation failed for name.\n");
+        free(frontNode);
+        return;
+    }
+    strcpy(frontNode->name, frontName);
+    frontNode->next = queue->front;
+    queue->front = frontNode;
+
+    if (queue->rear == NULL)
+    {
+        queue->rear = frontNode;
+    }
+    // Increment size of queue
+    queue->size++;
+    return;
+}
+
 /* deleteName */
-void deleteName(NamesList *queue, const char *deletedName)
+void deleteName(NameQueue *queue, const char *deletedName)
 {
     // Check queue existence
     if (!queue || !queue->front)
@@ -74,7 +112,7 @@ void deleteName(NamesList *queue, const char *deletedName)
     if (deletedName == queue->front->name)
     {
         // Set temporary pointer for later memory deallocation
-        NameNode *temp = queue->front;
+        nameNode *temp = queue->front;
         // Move front to next name in queue
         queue->front = queue->front->next;
         // Memory deallocation
@@ -85,7 +123,7 @@ void deleteName(NamesList *queue, const char *deletedName)
     else
     {
         // Pointer to traverse queue
-        NameNode *nodePTR = queue->front->next;
+        nameNode *nodePTR = queue->front->next;
         // Traverse queue
         while (nodePTR != NULL)
         {
@@ -95,6 +133,7 @@ void deleteName(NamesList *queue, const char *deletedName)
                 free(nodePTR->name);
                 free(nodePTR);
             }
+            nodePTR = nodePTR->next;
         }
     }
     // Decrement size of queue
@@ -104,7 +143,7 @@ void deleteName(NamesList *queue, const char *deletedName)
 }
 
 /* queueSize */
-int queueSize(NamesList *queue)
+int queueSize(NameQueue *queue)
 {
     // Statement
     printf("Size of queue: ");
