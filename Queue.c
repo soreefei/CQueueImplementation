@@ -6,9 +6,9 @@
 // Function Implementations
 
 /* createQueue */
-NameQueue *createQueue()
+Queue *createQueue()
 {
-    NameQueue *queue = malloc(sizeof(NameQueue));
+    Queue *queue = malloc(sizeof(Queue));
     // Memory allocation failure
     if (!queue)
     {
@@ -23,12 +23,12 @@ NameQueue *createQueue()
 
 /* insertName */
 // Inserts a name into the queue
-void insertName(NameQueue *queue, const char *newName)
+void insertName(Queue *queue, const char *newName)
 {
     // Check queue existence
     if (!queue)
     {
-        fprintf(stderr, "Queue does not exist.\n");
+        fprintf(stderr, "\nQueue does not exist.\n\n");
         return;
     }
     // Check for empty queue; will have to insert front node
@@ -38,11 +38,11 @@ void insertName(NameQueue *queue, const char *newName)
         return;
     }
     // Create a new node
-    nameNode *newNode = malloc(sizeof(nameNode));
+    Node *newNode = malloc(sizeof(Node));
     // Memory allocation failure
     if (!newNode)
     {
-        fprintf(stderr, "Memory allocation failed for new node.\n");
+        fprintf(stderr, "\nMemory allocation failed for new node.\n\n");
         return;
     }
     // Allocate memory for name
@@ -50,7 +50,7 @@ void insertName(NameQueue *queue, const char *newName)
     // Memory allocation failure for name
     if (!newNode->name)
     {
-        fprintf(stderr, "Memory allocation failed for name.\n");
+        fprintf(stderr, "\nMemory allocation failed for name.\n\n");
         free(newNode);
         return;
     }
@@ -65,24 +65,24 @@ void insertName(NameQueue *queue, const char *newName)
     queue->rear->next = newNode;
     queue->rear = newNode;
     // Print the inserted name
-    printf("Inserted name: %s\n", newNode->name);
+    printf("\nInserted name: %s\n\n", newNode->name);
 }
 
-void insertFront(NameQueue *queue, const char *frontName)
+void insertFront(Queue *queue, const char *frontName)
 {
     // Allocate for front node
-    nameNode *frontNode = malloc(sizeof(nameNode));
+    Node *frontNode = malloc(sizeof(Node));
     // Memory allocation failure
     if (!frontNode)
     {
-        fprintf(stderr, "Memory allocation failed for new node.\n");
+        fprintf(stderr, "\nMemory allocation failed for new node.\n\n");
         return;
     }
     // Allocate memory for name
     frontNode->name = malloc(strlen(frontName) + 1);
     if (!frontNode->name)
     {
-        fprintf(stderr, "Memory allocation failed for name.\n");
+        fprintf(stderr, "\nMemory allocation failed for name.\n\n");
         free(frontNode);
         return;
     }
@@ -96,73 +96,94 @@ void insertFront(NameQueue *queue, const char *frontName)
     }
     // Increment size of queue
     queue->size++;
+    // Print the inserted name
+    printf("\nInserted name at front: %s\n\n", frontNode->name);
     return;
 }
 
 /* deleteName */
-void deleteName(NameQueue *queue, const char *deletedName)
+void deleteName(Queue *queue, const char *deletedName)
 {
     // Check queue existence
     if (!queue || !queue->front)
     {
-        fprintf(stderr, "Queue does not exist or is empty.\n");
+        fprintf(stderr, "\nQueue does not exist or is empty.\n\n");
         return;
     }
     // Case if name deleted is front
-    if (deletedName == queue->front->name)
+    if (!strcmp(deletedName, queue->front->name))
     {
         // Set temporary pointer for later memory deallocation
-        nameNode *temp = queue->front;
+        Node *temp = queue->front;
         // Move front to next name in queue
         queue->front = queue->front->next;
         // Memory deallocation
         free(temp->name);
         free(temp);
+        // Decrement size of queue
+        queue->size--;
+        // Print deleted name
+        printf("\nDeleted name: %s\n\n", deletedName);
+        return;
     }
     // If name deleted not front
     else
     {
         // Pointer to traverse queue
-        nameNode *nodePTR = queue->front->next;
+        Node *nodePTR = queue->front;
+        Node *prevNode = NULL;
         // Traverse queue
-        while (nodePTR != NULL)
+        while (nodePTR != NULL && strcmp(nodePTR->name, deletedName) != 0)
         {
-            if (nodePTR->name == deletedName)
-            {
-                // Deallocate memory for deletion
-                free(nodePTR->name);
-                free(nodePTR);
-            }
+            prevNode = nodePTR;
             nodePTR = nodePTR->next;
         }
+        // If name not found
+        if (nodePTR == NULL)
+        {
+            printf("Name '%s' not found in the queue.\n", deletedName);
+            return;
+        }
+        // If name not at tail
+        if (nodePTR)
+        {
+            prevNode->next = nodePTR->next;
+            free(nodePTR->name);
+            free(nodePTR);
+        }
+        // Decrement size of queue
+        queue->size--;
+        // Print deleted name
+        printf("\nDeleted name: %s\n\n", deletedName);
+        return;
     }
-    // Decrement size of queue
-    queue->size--;
-    // Print deleted name
-    printf("Deleted name: %s\n", deletedName);
 }
 
 /* queueSize */
-int queueSize(NameQueue *queue)
+void queueSize(Queue *queue)
 {
-    // Statement
-    printf("Size of queue: ");
-    // Return size of queue
-    return (queue) ? queue->size : 0;
+    // Check queue existence
+    if (!queue)
+    {
+        fprintf(stderr, "\nQueue does not exist.\n\n");
+        return;
+    }
+    // Print size of queue
+    printf("\nSize of queue: %d\n\n", queue->size);
 }
 
 /* printQueue */
-void printQueue(NameQueue *queue)
+void printQueue(Queue *queue)
 {
     // Check queue existence
     if (!queue || queue->size == 0)
     {
-        printf("Queue is empty.\n");
+        printf("\nQueue is empty.\n\n");
         return;
     }
     // Print names in queue
-    printf("Here are the names in the queue: [ ");
-    nameNode *nodePTR = queue->front;
+    printf("\nHere are the names in the queue: [ ");
+    Node *nodePTR = queue->front;
     while (nodePTR != NULL)
     {
         printf("%s", nodePTR->name);
@@ -172,5 +193,30 @@ void printQueue(NameQueue *queue)
         }
         nodePTR = nodePTR->next;
     }
-    printf(" ]\n");
+    printf(" ]\n\n");
+}
+
+void reverseQueue(Queue *queue)
+{
+    // Check if queue is empty
+    if (!queue || queue->size == 0)
+    {
+        printf("\nQueue is empty, nothing to reverse.\n\n");
+        return;
+    }
+    // Reverse the queue
+    Node *nodePTR = queue->front;
+    Node *prevNode = NULL;
+    // Point rear to queue front
+    queue->rear = nodePTR;
+    while (nodePTR)
+    {
+        Node *nextNode = nodePTR->next;
+        nodePTR->next = prevNode;
+        prevNode = nodePTR;
+        nodePTR = nextNode;
+    }
+    queue->front = prevNode;
+    printf("\nReversed queue: ");
+    printQueue(queue);
 }

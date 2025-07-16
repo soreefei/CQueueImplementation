@@ -3,37 +3,39 @@
 
 // Queue and node structures
 /* Name in Queue */
-typedef struct nameNode
+typedef struct Node
 {
     char *name;
-    struct nameNode *next;
-} nameNode;
+    struct Node *next;
+} Node;
 
 /* Queue Structure */
-typedef struct NameQueue
+typedef struct Queue
 {
     // Head (front) of the queue
-    nameNode *front;
+    Node *front;
     // Tail (rear) of the queue
-    nameNode *rear;
+    Node *rear;
     // Size of the queue
     int size;
-} NameQueue;
+} Queue;
 
 // Queue Creation
-NameQueue *createQueue();
+Queue *createQueue();
 
 // Insert a name into queue
-void insertName(NameQueue *queue, const char *newName);
+void insertName(Queue *queue, const char *newName);
 
-void insertFront(NameQueue *queue, const char *frontName);
+void insertFront(Queue *queue, const char *frontName);
 
 // Delete name from queue
-void deleteName(NameQueue *queue, const char *deletedName);
+void deleteName(Queue *queue, const char *deletedName);
 
 // Returnrs size of queue
-int queueSize(NameQueue *queue);
+void queueSize(Queue *queue);
 
-void printQueue(NameQueue *queue);
+void printQueue(Queue *queue);
+
+void reverseQueue(Queue *queue);
 
 #endif
